@@ -5,7 +5,9 @@ RSpec.describe Link, type: :model do
     link = Link.create(url: "http://sample.com/")
     expect(link.shortcode.size).to eq(3)
     expect(Link.resolve_id(link.shortcode)).to eq(link.id)
+  end
 
+  it "should should always resolve shortcode back to the original id" do
     (1...20000).each do |i|
       expect(Link.resolve_id(Link.shortcode_from_id(i))).to eq(i)
     end
