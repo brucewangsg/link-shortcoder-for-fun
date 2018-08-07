@@ -10,4 +10,14 @@ class LinksController < ApplicationController
       }
     }
   end
+
+  def show
+    link_id = Link.resolve_id(params[:id])
+    link = Link.where(id: link_id).first
+    if link
+      redirect_to link.url
+    else
+      raise ActionController::RoutingError.new('Not Found')
+    end
+  end
 end

@@ -19,4 +19,11 @@ RSpec.describe LinksController, type: :request do
     expect(Link.last.id).to eq(same_id) # duplicate, it should not create new instance
     expect(JSON.parse(response.body)["data"]["url"]).to eq(params[:url])
   end
+
+  it 'should redirect to new link' do
+    link = Link.create(url: params[:url])
+    get "/#{link.shortcode}"
+    expect(response.status).to eq(302)
+    expect(response.headers["Location"]).to eq(link.url)
+  end
 end
