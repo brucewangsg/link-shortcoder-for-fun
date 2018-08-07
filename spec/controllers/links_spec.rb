@@ -35,5 +35,8 @@ RSpec.describe LinksController, type: :request do
 
     get '/links/check', params: params
     expect(JSON.parse(response.body)["data"]["url"]).to eq(params[:url])    
+
+    get '/links/check', params: { url: 'http://notexist.com/' }
+    expect(JSON.parse(response.body).keys).to include('error')    
   end
 end
