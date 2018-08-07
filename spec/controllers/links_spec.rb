@@ -26,4 +26,14 @@ RSpec.describe LinksController, type: :request do
     expect(response.status).to eq(302)
     expect(response.headers["Location"]).to eq(link.url)
   end
+
+  it 'should create new link' do
+    post '/links', params: params
+    expect(response.status).to eq(200)
+    expect(Link.last.url).to eq(params[:url])
+    expect(JSON.parse(response.body)["data"]["url"]).to eq(params[:url])    
+
+    get '/links/check', params: params
+    expect(JSON.parse(response.body)["data"]["url"]).to eq(params[:url])    
+  end
 end

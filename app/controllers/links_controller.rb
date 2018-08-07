@@ -11,6 +11,22 @@ class LinksController < ApplicationController
     }
   end
 
+  def check
+    if link = Link.where(url: params[:url]).first
+      render json: { data: {
+          id: link.id,
+          shortcode: link.shortcode,
+          url: link.url
+        }
+      }
+    else
+      render json: { error: {
+          message: 'Not Found'
+        }
+      }
+    end
+  end
+
   def show
     link_id = Link.resolve_id(params[:id])
     link = Link.where(id: link_id).first
