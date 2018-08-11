@@ -8,8 +8,13 @@ RSpec.describe Link, type: :model do
   end
 
   it "should should always resolve shortcode back to the original id" do
-    (1...20000).each do |i|
+    (1...50000).each do |i|
       expect(Link.resolve_id(Link.shortcode_from_id(i))).to eq(i)
     end
+  end
+
+  it "should have uniq codes" do
+    codes = (1...50000).map{|num|Link.shortcode_from_id(num)}
+    expect(codes.uniq.count).to eq(codes.count)
   end
 end
