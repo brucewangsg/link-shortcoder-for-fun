@@ -1,6 +1,6 @@
 class LinksController < ApplicationController
   def create
-    url = params[:url].to_s.split('://').last
+    url = normalized_url
     unless link = Link.where(url: url).first
       link = Link.create(url: url)
     end
@@ -13,7 +13,7 @@ class LinksController < ApplicationController
   end
 
   def check
-    url = params[:url].to_s.split('://').last
+    url = normalized_url
     if link = Link.where(url: url).first
       render json: { data: {
           id: link.id,
@@ -37,5 +37,12 @@ class LinksController < ApplicationController
     else
       raise ActionController::RoutingError.new('Not Found')
     end
+  end
+
+  private 
+
+  def normalized_url
+    url = params[:url].to_s.split('://').last.split('#').first.split(/[\r\n]/).first
+    url = url.index('/').nil? && !url.blank? && url =~ /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?$/ ? "#{url}/" : url
   end
 end
