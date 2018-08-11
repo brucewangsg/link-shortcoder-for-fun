@@ -43,7 +43,8 @@ class LinksController < ApplicationController
 
   def normalized_url
     url = params[:url].to_s.split('://').last.split('#').first.split(/[\r\n]/).first
+    url = url.index('/').nil? && !url.index('?').nil? ? url.sub(/\?/, '/?') : url
     url = url.index('/').nil? && !url.blank? && url =~ /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?$/ ? "#{url}/" : url
-    url = url.sub(/[\?&]+$/, '')
+    url = url.sub(/[\?&]+$/, '').sub(/[\?]{2,}/, '?').sub(/[\&]{2,}/, '&')
   end
 end
