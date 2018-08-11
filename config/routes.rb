@@ -7,4 +7,5 @@ Rails.application.routes.draw do
   end
 
   get '/:id', controller: :links, action: :show
+  root :to => 'homepage#index'
 end
