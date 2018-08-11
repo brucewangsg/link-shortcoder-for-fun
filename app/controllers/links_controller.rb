@@ -33,7 +33,7 @@ class LinksController < ApplicationController
     link_id = Link.resolve_id(params[:id])
     link = Link.where(id: link_id).first
     if link
-      redirect_to "#{request.protocol}#{link.url}"
+      redirect_to "#{request.protocol||(request.headers['x-forwarded-proto'] ? "#{request.headers['x-forwarded-proto']}://" : nil)||'http://'}#{link.url}"
     else
       raise ActionController::RoutingError.new('Not Found')
     end
