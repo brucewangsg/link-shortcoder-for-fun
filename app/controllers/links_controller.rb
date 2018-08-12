@@ -37,6 +37,7 @@ class LinksController < ApplicationController
       
       # storing stats should not slow down the redirection
       process = fork do
+        Link.where(id: link.id).update_all("visit_count = visit_count + 1")
         LinkStat.create(link_id: link.id, details: {
           "User-Agent": request.user_agent,
           "Remote-IP": request.env["HTTP_X_FORWARDED_FOR"].try(:split, ',').try(:last) || request.env["REMOTE_ADDR"],
@@ -48,20 +49,6 @@ class LinksController < ApplicationController
     else
       raise ActionController::RoutingError.new('Not Found')
     end
-  end
-
-  def stats
-    stats = LinkStat.where(link_id: Link.resolve_id(params[:id])).order("id DESC").limit(100).all
-    render json: {
-      visits: stats.map{|stat|
-        {
-          timestamp: stat.created_at,
-          remote_ip: stat.details[:"Remote-IP"],
-          user_agent: stat.details[:"User-Agent"],
-          language: stat.details[:"Language"]
-        }
-      }
-    }
   end
 
   private 

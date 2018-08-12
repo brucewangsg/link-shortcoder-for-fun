@@ -4,12 +4,10 @@ Rails.application.routes.draw do
     collection do
       get :check
     end
-    member do 
-      get :stats
-    end
   end
 
-  get '/stats/:id', controller: :links, action: :stats
+  resources :stats, only: [:index, :show]
+
   get '/:id', controller: :links, action: :show
   root :to => 'homepage#index'
 end
